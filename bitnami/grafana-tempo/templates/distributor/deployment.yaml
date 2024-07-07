@@ -111,43 +111,43 @@ spec:
               name: http-memberlist
             - containerPort: {{ .Values.tempo.containerPorts.grpc }}
               name: grpc
-            {{- if .Values.tempo.traces.jaeger.thriftCompact }}
-            - containerPort: 6831
+            {{- if .Values.tempo.traces.jaeger.thriftCompact.enabled }}
+            - containerPort: {{ .Values.tempo.traces.jaeger.thriftCompact.port }}
               name: jaeger-compact
               protocol: UDP
             {{- end }}
-            {{- if .Values.tempo.traces.jaeger.thriftBinary }}
-            - containerPort: 6832
+            {{- if .Values.tempo.traces.jaeger.thriftBinary.enabled }}
+            - containerPort: {{ .Values.tempo.traces.jaeger.thriftBinary.port }}
               name: jaeger-binary
               protocol: UDP
             {{- end }}
-            {{- if .Values.tempo.traces.jaeger.thriftHttp }}
-            - containerPort: 14268
+            {{- if .Values.tempo.traces.jaeger.thriftHttp.enabled }}
+            - containerPort: {{ .Values.tempo.traces.jaeger.thriftHttp.port }}
               name: jaeger-http
               protocol: TCP
             {{- end }}
-            {{- if .Values.tempo.traces.jaeger.grpc }}
-            - containerPort: 14250
+            {{- if .Values.tempo.traces.jaeger.grpc.enabled }}
+            - containerPort: {{ .Values.tempo.traces.jaeger.grpc.port }}
               name: jaeger-grpc
               protocol: TCP
             {{- end }}
-            {{- if .Values.tempo.traces.zipkin }}
-            - containerPort: 9411
+            {{- if .Values.tempo.traces.zipkin.enabled }}
+            - containerPort: {{ .Values.tempo.traces.zipkin.port }}
               name: zipkin
               protocol: TCP
             {{- end }}
-            {{- if .Values.tempo.traces.otlp.http }}
-            - containerPort: 55681
+            {{- if .Values.tempo.traces.otlp.http.enabled }}
+            - containerPort: {{ .Values.tempo.traces.otlp.http.port }}
               name: otlp-http
               protocol: TCP
             {{- end }}
-            {{- if .Values.tempo.traces.otlp.grpc }}
-            - containerPort: 4317
+            {{- if .Values.tempo.traces.otlp.grpc.enabled }}
+            - containerPort: {{ .Values.tempo.traces.otlp.grpc.port }}
               name: otlp-grpc
               protocol: TCP
             {{- end }}
-            {{- if .Values.tempo.traces.opencensus }}
-            - containerPort: 55678
+            {{- if .Values.tempo.traces.opencensus.enabled }}
+            - containerPort: {{ .Values.tempo.traces.opencensus.port }}
               name: opencensus
               protocol: TCP
             {{- end }}

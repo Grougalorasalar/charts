@@ -54,55 +54,63 @@ spec:
       nodePort: null
       {{- end }}
     ## From here we use non-configurable, standard ports
-    {{- if .Values.tempo.traces.jaeger.thriftCompact }}
+    {{- if .Values.tempo.traces.jaeger.thriftCompact.enabled }}
     - name: distributor-jaeger-thrift-compact
-      port: 6831
+      port: {{ .Values.tempo.traces.jaeger.thriftCompact.port }}
       protocol: UDP
       targetPort: jaeger-compact
     {{- end }}
-    {{- if .Values.tempo.traces.jaeger.thriftBinary }}
+    {{- if .Values.tempo.traces.jaeger.thriftBinary.enabled }}
     - name: distributor-jaeger-thrift-binary
-      port: 6832
+      port: {{ .Values.tempo.traces.jaeger.thriftBinary.port }}
       protocol: UDP
       targetPort: jaeger-binary
     {{- end }}
-    {{- if .Values.tempo.traces.jaeger.thriftHttp }}
+    {{- if .Values.tempo.traces.jaeger.thriftHttp.enabled }}
     - name: distributor-jaeger-thrift-http
-      port: 14268
+      port: {{ .Values.tempo.traces.jaeger.thriftHttp.port }}
       protocol: TCP
       targetPort: jaeger-http
     {{- end }}
-    {{- if .Values.tempo.traces.jaeger.grpc }}
+    {{- if .Values.tempo.traces.jaeger.grpc.enabled }}
     - name: distributor-jaeger-grpc
-      port: 14250
+      port: {{ .Values.tempo.traces.jaeger.grpc.port }}
       protocol: TCP
       targetPort: jaeger-grpc
     {{- end }}
-    {{- if .Values.tempo.traces.zipkin }}
+    {{- if .Values.tempo.traces.zipkin.enabled }}
     - name: distributor-zipkin
-      port: 9411
+      port: {{ .Values.tempo.traces.zipkin.port }}
       protocol: TCP
       targetPort: zipkin
     {{- end }}
-    {{- if .Values.tempo.traces.otlp.http }}
+    {{- if .Values.tempo.traces.otlp.http.enabled }}
     - name: distributor-otlp-http
+      port: {{ .Values.tempo.traces.otlp.http.port }}
+      protocol: TCP
+      targetPort: otlp-http
+    {{- if .Values.tempo.traces.otlp.http.enabledLegacy }}
+    - name: distributor-otlp-http-legacy
       port: 55681
       protocol: TCP
       targetPort: otlp-http
     {{- end }}
-    {{- if .Values.tempo.traces.otlp.grpc }}
+    {{- end }}
+    {{- if .Values.tempo.traces.otlp.grpc.enabled }}
     - name: distributor-otlp-grpc
-      port: 4317
+      port: {{ .Values.tempo.traces.otlp.grpc.port }}
       protocol: TCP
       targetPort: otlp-grpc
-    - name: distributor-otlp-legacy
+    {{- if .Values.tempo.traces.otlp.grpc.enabledLegacy }}
+    - name: distributor-otlp-grpc-legacy
       port: 55680
       protocol: TCP
       targetPort: otlp-grpc
     {{- end }}
-    {{- if .Values.tempo.traces.opencensus }}
+    {{- end }}
+    {{- if .Values.tempo.traces.opencensus.enabled }}
     - name: distributor-opencensus
-      port: 55678
+      port: {{ .Values.tempo.traces.opencensus.port }}
       protocol: TCP
       targetPort: opencensus
     {{- end }}

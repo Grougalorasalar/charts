@@ -38,32 +38,37 @@ spec:
         - port: {{ .Values.tempo.containerPorts.web }}
         - port: {{ .Values.tempo.containerPorts.gossipRing }}
         - port: {{ .Values.tempo.containerPorts.grpc }}
-        {{/* The following ports are hardcoded in grafana-tempo */}}
-        {{- if .Values.tempo.traces.jaeger.thriftCompact }}
-        - port: 6831
+        {{- if .Values.tempo.traces.jaeger.thriftCompact.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.thriftCompact.port }}
           protocol: UDP
         {{- end }}
-        {{- if .Values.tempo.traces.jaeger.thriftBinary }}
-        - port: 6832
+        {{- if .Values.tempo.traces.jaeger.thriftBinary.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.thriftBinary.port }}
           protocol: UDP
         {{- end }}
-        {{- if .Values.tempo.traces.jaeger.thriftHttp }}
-        - port: 14268
+        {{- if .Values.tempo.traces.jaeger.thriftHttp.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.thriftHttp.port }}
         {{- end }}
-        {{- if .Values.tempo.traces.jaeger.grpc }}
-        - port: 14250
+        {{- if .Values.tempo.traces.jaeger.grpc.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.grpc.port }}
         {{- end }}
-        {{- if .Values.tempo.traces.zipkin }}
-        - port: 9411
+        {{- if .Values.tempo.traces.zipkin.enabled }}
+        - port: {{ .Values.tempo.traces.zipkin.port }}
         {{- end }}
-        {{- if .Values.tempo.traces.otlp.http }}
+        {{- if .Values.tempo.traces.otlp.http.enabled }}
+        - port: {{ .Values.tempo.traces.otlp.http.port }}
+        {{- if .Values.tempo.traces.otlp.http.enabledLegacy }}
         - port: 55681
         {{- end }}
-        {{- if .Values.tempo.traces.otlp.grpc }}
-        - port: 4317
         {{- end }}
-        {{- if .Values.tempo.traces.opencensus }}
-        - port: 55678
+        {{- if .Values.tempo.traces.otlp.grpc.enabled }}
+        - port: {{ .Values.tempo.traces.otlp.grpc.port }}
+        {{- if .Values.tempo.traces.otlp.grpc.enabledLegacy }}
+        - port: 55680
+        {{- end }}
+        {{- end }}
+        {{- if .Values.tempo.traces.opencensus.enabled }}
+        - port: {{ .Values.tempo.traces.opencensus.port }}
         {{- end }}
       to:
         - podSelector:
@@ -98,32 +103,37 @@ spec:
         - port: {{ .Values.tempo.containerPorts.web }}
         - port: {{ .Values.tempo.containerPorts.gossipRing }}
         - port: {{ .Values.tempo.containerPorts.grpc }}
-        {{/* The following ports are hardcoded in grafana-tempo */}}
-        {{- if .Values.tempo.traces.jaeger.thriftCompact }}
-        - port: 6831
+        {{- if .Values.tempo.traces.jaeger.thriftCompact.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.thriftCompact.port }}
           protocol: UDP
         {{- end }}
-        {{- if .Values.tempo.traces.jaeger.thriftBinary }}
-        - port: 6832
+        {{- if .Values.tempo.traces.jaeger.thriftBinary.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.thriftBinary.port }}
           protocol: UDP
         {{- end }}
-        {{- if .Values.tempo.traces.jaeger.thriftHttp }}
-        - port: 14268
+        {{- if .Values.tempo.traces.jaeger.thriftHttp.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.thriftHttp.port }}
         {{- end }}
-        {{- if .Values.tempo.traces.jaeger.grpc }}
-        - port: 14250
+        {{- if .Values.tempo.traces.jaeger.grpc.enabled }}
+        - port: {{ .Values.tempo.traces.jaeger.grpc.port }}
         {{- end }}
-        {{- if .Values.tempo.traces.zipkin }}
-        - port: 9411
+        {{- if .Values.tempo.traces.zipkin.enabled }}
+        - port: {{ .Values.tempo.traces.zipkin.port }}
         {{- end }}
-        {{- if .Values.tempo.traces.otlp.http }}
+        {{- if .Values.tempo.traces.otlp.http.enabled }}
+        - port: {{ .Values.tempo.traces.otlp.http.port }}
+        {{- if .Values.tempo.traces.otlp.http.enabledLegacy }}
         - port: 55681
         {{- end }}
-        {{- if .Values.tempo.traces.otlp.grpc }}
-        - port: 4317
         {{- end }}
-        {{- if .Values.tempo.traces.opencensus }}
-        - port: 55678
+        {{- if .Values.tempo.traces.otlp.grpc.enabled }}
+        - port: {{ .Values.tempo.traces.otlp.grpc.port }}
+        {{- if .Values.tempo.traces.otlp.grpc.enabledLegacy }}
+        - port: 55680
+        {{- end }}
+        {{- end }}
+        {{- if .Values.tempo.traces.opencensus.enabled }}
+        - port: {{ .Values.tempo.traces.opencensus.port }}
         {{- end }}
       {{- if not .Values.distributor.networkPolicy.allowExternal }}
       from:

@@ -106,31 +106,69 @@ tempo:
   ##
   traces:
     jaeger:
-      ## @param tempo.traces.jaeger.grpc Enable Tempo to ingest Jaeger GRPC traces
-      ##
-      grpc: true
-      ## @param tempo.traces.jaeger.thriftBinary Enable Tempo to ingest Jaeger Thrift Binary traces
-      ##
-      thriftBinary: false
-      ## @param tempo.traces.jaeger.thriftCompact Enable Tempo to ingest Jaeger Thrift Compact traces
-      ##
-      thriftCompact: false
-      ## @param tempo.traces.jaeger.thriftHttp Enable Tempo to ingest Jaeger Thrift HTTP traces
-      ##
-      thriftHttp: true
+      grpc: 
+        ## @param tempo.traces.jaeger.grpc.enabled Enable Tempo to ingest Jaeger GRPC traces
+        ##
+        enabled: true
+        ## @param tempo.traces.jaeger.grpc.port Set Tempo port for Jaeger GRPC traces
+        ##
+        port: 14250
+      thriftBinary:
+        ## @param tempo.traces.jaeger.thriftBinary.enabled Enable Tempo to ingest Jaeger Thrift Binary traces
+        ##
+        enabled: false
+        ## @param tempo.traces.jaeger.thriftBinary.port Set Tempo port for Jaeger Thrift Binary traces
+        ##
+        port: 6832
+      thriftCompact: 
+        ## @param tempo.traces.jaeger.thriftCompact.enabled Enable Tempo to ingest Jaeger Thrift Compact traces
+        ##
+        enabled: false
+        ## @param tempo.traces.jaeger.thriftCompact.port Set Tempo port for Jaeger Thrift Compact traces
+        ##
+        port: 6831
+      thriftHttp: 
+        ## @param tempo.traces.jaeger.thriftHttp.enabled Enable Tempo to ingest Jaeger Thrift HTTP traces
+        ##
+        enabled: false
+        ## @param tempo.traces.jaeger.thriftHttp.port Set Tempo port for Jaeger Thrift HTTP traces
+        ##
+        port: 14268
     otlp:
-      ## @param tempo.traces.otlp.http Enable Tempo to ingest Open Telemetry HTTP traces
+      http: 
+        ## @param tempo.traces.otlp.http.enabled Enable Tempo to ingest Open Telemetry HTTP traces
+        ##
+        enabled: false
+        ## @param tempo.traces.otlp.http.port Set Tempo port for Open Telemetry HTTP traces
+        ##
+        port: 4318
+        ## @param tempo.traces.otlp.http.enabledLegacy Enable Open Telemetry HTTP traces legacy port
+        ##
+        enabledLegacy: false
+      grpc:
+        ## @param tempo.traces.otlp.grpc.enabled Enable Tempo to ingest Open Telemetry GRPC traces
+        ##
+        enabled: false
+        ## @param tempo.traces.otlp.grpc.port Set Tempo port for Open Telemetry GRPC traces
+        ##
+        port: 4317
+        ## @param tempo.traces.otlp.grpc.enabledLegacy Enable Open Telemetry GRPC traces legacy port
+        ##
+        enabledLegacy: false
+    opencensus: 
+      ## @param tempo.traces.opencensus.enabled Enable Tempo to ingest OpenCensus traces
       ##
-      http: false
-      ## @param tempo.traces.otlp.grpc Enable Tempo to ingest Open Telemetry GRPC traces
+      enabled: false
+      ## @param tempo.traces.opencensus.port Set Tempo port for OpenCensus traces
       ##
-      grpc: false
-    ## @param tempo.traces.opencensus Enable Tempo to ingest Open Census traces
-    ##
-    opencensus: false
-    ## @param tempo.traces.zipkin Enable Tempo to ingest Zipkin traces
-    ##
-    zipkin: false
+      port: 55678
+    zipkin: 
+      ## @param tempo.traces.zipkin.enabled Enable Tempo to ingest Zipkin traces
+      ##
+      enabled: false
+      ## @param tempo.traces.zipkin.port Set Tempo Distributor port for Zipkin traces
+      ##
+      port: 9411
   ## @param tempo.configuration [string] Tempo components configuration
   ##
   configuration: |
@@ -156,45 +194,45 @@ tempo:
         kvstore:
           store: memberlist
       receivers:
-        {{- if  or (.Values.tempo.traces.jaeger.thriftCompact) (.Values.tempo.traces.jaeger.thriftBinary) (.Values.tempo.traces.jaeger.thriftHttp) (.Values.tempo.traces.jaeger.grpc) }}
+        {{- if  or (.Values.tempo.traces.jaeger.thriftCompact.enabled) (.Values.tempo.traces.jaeger.thriftBinary.enabled) (.Values.tempo.traces.jaeger.thriftHttp.enabled) (.Values.tempo.traces.jaeger.grpc.enabled) }}
         jaeger:
           protocols:
-            {{- if .Values.tempo.traces.jaeger.thriftCompact }}
+            {{- if .Values.tempo.traces.jaeger.thriftCompact.enabled }}
             thrift_compact:
-              endpoint: 0.0.0.0:6831
+              endpoint: 0.0.0.0:{{ .Values.tempo.traces.jaeger.thriftCompact.port }}
             {{- end }}
-            {{- if .Values.tempo.traces.jaeger.thriftBinary }}
+            {{- if .Values.tempo.traces.jaeger.thriftBinary.enabled }}
             thrift_binary:
-              endpoint: 0.0.0.0:6832
+              endpoint: 0.0.0.0:{{ .Values.tempo.traces.jaeger.thriftBinary.port }}
             {{- end }}
-            {{- if .Values.tempo.traces.jaeger.thriftHttp }}
+            {{- if .Values.tempo.traces.jaeger.thriftHttp.enabled }}
             thrift_http:
-              endpoint: 0.0.0.0:14268
+              endpoint: 0.0.0.0:{{ Values.tempo.traces.jaeger.thriftHttp.port }}
             {{- end }}
-            {{- if .Values.tempo.traces.jaeger.grpc }}
+            {{- if .Values.tempo.traces.jaeger.grpc.enabled }}
             grpc:
-              endpoint: 0.0.0.0:14250
+              endpoint: 0.0.0.0:{{ Values.tempo.traces.jaeger.grpc.port }}
             {{- end }}
         {{- end }}
-        {{- if .Values.tempo.traces.zipkin }}
+        {{- if .Values.tempo.traces.zipkin.enabled }}
         zipkin:
-          endpoint: 0.0.0.0:9411
+          endpoint: 0.0.0.0:{{ Values.tempo.traces.zipkin.port }}
         {{- end }}
-        {{- if or (.Values.tempo.traces.otlp.http) (.Values.tempo.traces.otlp.grpc) }}
+        {{- if or (.Values.tempo.traces.otlp.http.enabled) (.Values.tempo.traces.otlp.grpc.enabled) }}
         otlp:
           protocols:
-            {{- if .Values.tempo.traces.otlp.http }}
+            {{- if .Values.tempo.traces.otlp.http.enabled }}
             http:
-              endpoint: 0.0.0.0:55681
+              endpoint: 0.0.0.0:{{ Values.tempo.traces.otlp.http.port }}
             {{- end }}
-            {{- if .Values.tempo.traces.otlp.grpc }}
+            {{- if .Values.tempo.traces.otlp.grpc.enabled }}
             grpc:
-              endpoint: 0.0.0.0:4317
+              endpoint: 0.0.0.0:{{ Values.tempo.traces.otlp.grpc.port }}
             {{- end }}
         {{- end }}
-        {{- if .Values.tempo.traces.opencensus }}
+        {{- if .Values.tempo.traces.opencensus.enabled }}
         opencensus:
-          endpoint: 0.0.0.0:55678
+          endpoint: 0.0.0.0:{{ Values.tempo.traces.opencensus.port }}
         {{- end }}
     querier:
       frontend_worker:
